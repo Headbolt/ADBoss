@@ -38,7 +38,7 @@ CurrentLocalADAdmins=$(dsconfigad -show | grep "Allowed admin groups" | cut -c 3
 # The entire String must be encapsulated in single quotes 
 # eg. '"DOMAIN\enterprise admins","DOMAIN2\domain admins",'
 #
-#ExtraAdmins=','
+#ExtraAdmins=',' # Normally Only used for Specific Additional Admins not referenced Elsewhere
 #
 TargetLocalADAdminString=$(Echo domain admins,"$ExtraAdmins""$TargetLocalADAdmins")
 #
@@ -108,7 +108,7 @@ ScriptEnd(){
 SectionEnd
 #
 # Outputs the Current AD Allowed Admins
-Echo Current AD Allowed Admins are : $CurrentLocalADAdmins
+/bin/echo Current AD Allowed Admins are : $CurrentLocalADAdmins
 #
 # Outputs a blank line for reporting purposes
 echo
@@ -133,6 +133,12 @@ if test "$CurrentLocalADAdmins" == "$TargetLocalADAdminString"
 		/bin/echo
 		dsconfigad -groups "$TargetLocalADAdminString"
 		#
+		SectionEnd
+		/bin/echo Re-Checking AD Allowed Admins
+		ReCheckLocalADAdmins=$(dsconfigad -show | grep "Allowed admin groups" | cut -c 36-)
+		# Outputs a blank line for reporting purposes
+		/bin/echo
+		/bin/echo New AD Allowed Admins are : $ReCheckLocalADAdmin
 		SectionEnd
 		ScriptEnd
 		exit 0
